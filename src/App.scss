@@ -1,0 +1,17 @@
+.App {
+  text-align: center;
+}
+.nav-container {
+  background-color: rgb(155, 197, 234);
+  .nav {
+    display: flex;
+    // align-items: flex-end;
+    justify-content: flex-end;
+    .nav-link {
+      margin: 0px 15px 0px 15px;
+      text-decoration: none;
+      color: #000;
+    }
+  }
+}
+
