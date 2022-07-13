@@ -1,13 +1,79 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Nav from "../Nav";
-
+import axios from 'axios';
+import { uuid } from 'uuidv4'
 function Front() {
+  const [lastUpdate, setLastUpdate] = useState(Date.now());
+  const [createForm, setCreateForm] = useState(null);
+  const [messages, setMessages] = useState([]);
+
+  // Main Form States
     const [title, setTitle] = useState('');
     const [address, setAddress] = useState('');
+    const [cost, setCost] = useState('');
+    const [constructionCost, setConstructionCost] = useState('');
     const [financialIncome, setFinancialIncome] = useState('0');
     const [specialBuilding, setSpecialBuilding] = useState('1');
-  const addMainForm = () => {};
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [validDocumentNumber, setValidDocumentNumber] = useState('');
+    const [validDocumentDate, setValidDocumentDate] = useState('');
+    const [architect, setArchitect] = useState('');
+    const [builder, setBuilder] = useState('');
+    const [contractor, setContractor] = useState('');
+
+
+
+    useEffect(() => {
+      if (null === createForm) return;
+      axios.post('http://localhost:3003/forms', createForm)
+          .then(res => {
+              setLastUpdate(Date.now());
+          })
+  }, [createForm]);
+  
+    
+  const addMainForm = () => {
+    const data = {
+      title, 
+      address, 
+      cost: parseFloat(cost),
+      constructionCost: parseFloat(constructionCost),
+      financialIncome: finansavimoSaltinis[financialIncome - 1],
+      specialBuilding: specialBuilding ? 1 : 0,
+      startDate,
+      endDate,
+      validDocumentNumber,
+      validDocumentDate,
+      architect,
+      builder,
+      contractor
+    }
+    setCreateForm(data);
+    setTitle('');
+    setAddress('');
+    setCost('');
+    setConstructionCost('');
+    setFinancialIncome('0');
+    setSpecialBuilding('1');
+    setStartDate('');
+    setEndDate('');
+    setValidDocumentNumber('');
+    setValidDocumentDate('');
+    setArchitect('');
+    setBuilder('');
+    setContractor('');
+  };
   const finansavimoSaltinis = ['valstybės biudžetas', 'savivaldybės biudžetas', 'įmonės lėšos', 'fizinio asmens lėšos'];
+console.log(finansavimoSaltinis[financialIncome - 1]);
+  const showMessage = (m) => {
+    const id = uuid();
+    m.id = id;
+    setMessages(msg => [...msg, m]);
+    setTimeout(() => {
+        setMessages(mes => mes.filter(ms => ms.id !== id))
+    }, 5000);
+}
   return (
     <>
       <Nav></Nav>
@@ -35,14 +101,14 @@ function Front() {
           <span>Statybos kaina (pagal statybos rangos sutartį) <input
             className="regCodeInput"
             type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={cost}
+            onChange={(e) => setCost(e.target.value)}
           />EUR, tame tarpe statybos-montavimo darbų kaina</span>
           <input
             className="regCodeInput"
             type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={constructionCost}
+            onChange={(e) => setConstructionCost(e.target.value)}
           />
         </div>
         <div className="formGroup">
@@ -82,28 +148,28 @@ function Front() {
             <span>Darbu pradžia</span>
             <input
               type="date"
-              //   value={lastUseTime}
-              //   onChange={(e) => setLastUseTime(e.target.value)}
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
             />
           </div>
           <div className="formGroup">
             <span>Darbu pabaiga</span>
             <input
               type="date"
-              //   value={lastUseTime}
-              //   onChange={(e) => setLastUseTime(e.target.value)}
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
           <div className="formGroup">
           <span>Statybos leidžiančio dokumento Nr.<input
             type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={validDocumentNumber}
+            onChange={(e) => setValidDocumentNumber(e.target.value)}
           />išdavimo data</span>
           <input
             type="date"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={validDocumentDate}
+            onChange={(e) => setValidDocumentDate(e.target.value)}
           />
         </div>
         <div className="formGroup">
@@ -111,8 +177,8 @@ function Front() {
           <input
             className="regCodeInput"
             type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={architect}
+            onChange={(e) => setArchitect(e.target.value)}
           />
         </div>
         <div className="formGroup">
@@ -120,8 +186,8 @@ function Front() {
           <input
             className="regCodeInput"
             type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={builder}
+            onChange={(e) => setBuilder(e.target.value)}
           />
         </div>
         <div className="formGroup">
@@ -129,8 +195,8 @@ function Front() {
           <input
             className="regCodeInput"
             type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={contractor}
+            onChange={(e) => setContractor(e.target.value)}
           />
         </div>
           <div>
